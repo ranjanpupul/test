@@ -3,7 +3,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import authentication, permissions
 from django.contrib.auth.models import User
-from models import EmployeeDetails, JobOpenings
+from models import EmployeeDetails, JobOpenings, Company
+from .serializers import CompanySerializer
 
 # Create your views here.
 
@@ -16,12 +17,16 @@ class ShowAllInformation(APIView):
         * Only admin users are able to access this view.
         """
 
-    def get(self, request, format=None):
+    def get(self, request):
         """
         Return a list of all users.
         """
-        employeevalue = EmployeeDetails.objects.all().values('company', 'employeeName', 'employeeRole',
-                                                                'employeeAge', 'company__companyName',
-                                                                'company__comapnyLocation',
-                                                                'company__totalEmployee', 'job__roleName')
-        return Response(employeevalue)
+        info = Company.objects.all()
+        serializer =  CompanySerializer(info, many=True)
+        return Response(serializer.data)
+
+        pass
+
+
+    def post(self):
+        pass

@@ -31,7 +31,7 @@ class JobOpenings(TimeStampAbstractModel):
     associatedCompany = models.ForeignKey(Company)
 
     def __unicode__(self):
-        return self.roleName + '|' + self.Company.company_name
+        return self.roleName + '|' + self.associatedCompany.companyName
 
 
 class EmployeeDetails(TimeStampAbstractModel):
@@ -39,7 +39,7 @@ class EmployeeDetails(TimeStampAbstractModel):
     employeeName = models.CharField(verbose_name='Name of Employee', max_length=50,)
     employeeRole = models.CharField(verbose_name='ROle of Employee', max_length=25)
     employeeAge = models.IntegerField(verbose_name='Age of an Employee',)
-    job = models.ForeignKey(JobOpenings)
+
 
     def __unicode__(self):
         return self.employeeName + '|' + self.company.companyName
