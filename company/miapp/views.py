@@ -6,6 +6,7 @@ from rest_framework import authentication, permissions
 from django.contrib.auth.models import User
 from models import EmployeeDetails, JobOpenings, Company
 from .serializers import CompanySerializer
+from django.template import loader
 import json
 # Create your views here.
 
@@ -26,21 +27,31 @@ class ShowAllInformation(APIView):
         info = EmployeeDetails.objects.select_related('JobOpenings').values('id','employeeName','employeeRole','employeeAge','company__companyName','company__comapnyLocation','company__totalEmployee')
         response_data = list(info)
         response_data = json.dumps(response_data)
-        return HttpResponse(response_data, content_type="application/json")
-
-        pass
-
+        return HttpResponse((response_data), content_type="application/json")
 
     def post(self,request):
-        employename = request.data.get('employeeName=employename',None)
-        role = request.data.get('employeeRole',None)
-        age = request.data.get('employeeAge',None)
-        companyname = request.data.get('company__companyName', None)
-        key = request.data.get('id',None)
+        employename = request.POST.get('employeeName=employename',None)
+        role = request.POST.get('employeeRole',None)
+        age = request.POST.get('employeeAge',None)
+        companyname = request.POST.get('company__companyName', None)
+        location = request.POST.get('company__comapnyLocation', None)
+        total = request.POST.get('company__totalEmployee', None)
+        cinfo = Company()
+        cinfo.companyName = companyname
+        cinfo.comapnyLocation = location
+        cinfo.totalEmployee = total
+        cinfo.save()
+        einfo = EmployeeDetails()
+        einfo.company = cinfo.id
+        einfo.employeeAge = age
+        einfo.employeeName = employename
+        einfo.employeeRole = role
+        einfo.save()
 
-        Einfo = EmployeeDetails.objects.get(key=key)
-        if Einfo is not None:            
-            Einfo.employeeName=employename
-            Einfo.employeeRole=role
-            Einfo.employeeAge=age
-            Einfo.save()
+
+class ShowResult(APIView):
+
+    def get(self, request):
+        name = request.data.get['name']
+        searchvalue = EmployeeDetails.objects.filter(employeeRole__icontains=name)
+        return searchvalue
