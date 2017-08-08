@@ -5,8 +5,6 @@ from rest_framework.response import Response
 from rest_framework import authentication, permissions
 from django.contrib.auth.models import User
 from models import EmployeeDetails, JobOpenings, Company
-from .serializers import CompanySerializer
-from django.template import loader
 import json
 # Create your views here.
 
@@ -31,12 +29,12 @@ class ShowAllInformation(APIView):
     def post(self,request):
         ''' we can increase the number of fields as much as we can'''
         try:
-            employename = request.POST.get('employeeName') if request.POST.get('employeeName') != 'None' else None
-            role = request.POST.get('employeeRole') if request.POST.get('employeeRole') != 'None' else None
-            age = request.POST.get('employeeAge') if request.POST.get('employeeAge') != 'None' else None
-            companyname = request.POST.get('company__companyName') if request.POST.get('company__companyName') != 'None' else None
-            location = request.POST.get('company__comapnyLocation') if request.POST.get('company__comapnyLocation') != 'None' else None
-            total = request.POST.get('company__totalEmployee') if request.POST.get('company__totalEmployee') != 'None' else None
+            employename = request.POST.get('employeeName', None)
+            role = request.POST.get('employeeRole', None)
+            age = request.POST.get('employeeAge', None)
+            companyname = request.POST.get('company__companyName', None)
+            location = request.POST.get('company__comapnyLocation', None)
+            total = request.POST.get('company__totalEmployee', None)
             cinfo = Company()
             cinfo.companyName = companyname
             cinfo.comapnyLocation = location
