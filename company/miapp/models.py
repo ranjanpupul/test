@@ -21,7 +21,6 @@ class Company(TimeStampAbstractModel):
     comapnyLocation = models.CharField(max_length=100, verbose_name='Company Location')
     totalEmployee = models.IntegerField(default=0, verbose_name='Total Number of Employee')
 
-
     def __unicode__(self):
         return self.companyName
 
