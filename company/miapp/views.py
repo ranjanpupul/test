@@ -21,18 +21,23 @@ class ShowAllInformation(APIView):
 
     def get(self, request):
         """
-        Return a list of all users.
+        Return a json with all values
         """
         response_data =  {}
-        info = EmployeeDetails.objects.select_related('JobOpenings').values('id','employeeName','employeeRole','employeeAge','company__companyName','company__comapnyLocation','company__totalEmployee')
+        info = EmployeeDetails.objects.select_related('JobOpenings').values('id','employeeName','employeeRole',
+                                                                            'employeeAge','company__companyName',
+                                                                            'company__comapnyLocation',
+                                                                            'company__totalEmployee',
+                                                                            'jobDetail__roleName',
+                                                                            'jobDetail__associatedCompany')
         response_data = list(info)
         response_data = json.dumps(response_data)
-        return HttpResponse((response_data), content_type="application/json")
+        return HttpResponse(response_data, content_type="application/json")
 
     def post(self,request):
         employename = request.POST.get('employeeName=employename',None)
-        role = request.POST.get('employeeRole',None)
-        age = request.POST.get('employeeAge',None)
+        role = request.POST.get('employeeRole', None)
+        age = request.POST.get('employeeAge', None)
         companyname = request.POST.get('company__companyName', None)
         location = request.POST.get('company__comapnyLocation', None)
         total = request.POST.get('company__totalEmployee', None)
@@ -52,6 +57,9 @@ class ShowAllInformation(APIView):
 class ShowResult(APIView):
 
     def get(self, request):
+        serachresult = {}
         name = request.data.get['name']
-        searchvalue = EmployeeDetails.objects.filter(employeeRole__icontains=name)
-        return searchvalue
+        searchvalue = EmployeeDetails.objects.filter(employeeRole__icontains=name).values('employeeRole', 'jobDetail__roleName')
+        serachresult = list(serachvalue)
+        serachresult = json.dumps(searchvalue)
+        return HttpResponse(serachresult, content_type="application/json")
